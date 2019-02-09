@@ -5,9 +5,6 @@
 # greater number of recursions the more squares the program is going to draw. Each
 # recursion call > 1 creates 4 squares at the corners of the already sepcified squares.
 
-# 1.A 2 5
-# 1.B 3 5
-# 1.C 4, 5
 import numpy as np
 import matplotlib.pyplot as plt
 def draw_squares(ax,x,y,n,w):
