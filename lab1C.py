@@ -1,3 +1,11 @@
+# Lab 1
+# By: Rigobeto Quiroz
+# Class: 1:30 PM - 2:50 PM MW
+# This program will draw a binary Tree. The tree will create a center point
+# and will generate branches to the left and to the right according to center point
+# the more recursion calls the more branches the tree will have. Each branch will have
+# two children and so fourth.
+
 # 3A. n = 3
 # 3B. n = 4
 # 3C. n = 7
