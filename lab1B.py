@@ -1,4 +1,10 @@
-#Done
+# Lab 1
+# By: Rigobeto Quiroz
+# Class: 1:30 PM - 2:50 PM MW
+# This program draws smaller circles to the left for each recursion call.
+# The more recursion calls and the amount you want to affect your radius
+# and center will cause the circles to change the output.
+
 #2A: 7, .7
 #2B. 45, .95
 #2C. 220, .98
