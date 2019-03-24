@@ -7,6 +7,7 @@
 # (5 elements). Print all the items at a given depth and finally and find a given
 # and return the output
 
+import time
 
 class BTree(object):
     # Constructor
@@ -162,7 +163,7 @@ def totalAtDepth(T, depth):
         return None
     # number of elements at depth
     if depth == 0:
-        return len(T.item)
+        return 1
     # if depth exceeds B-Tree depth
     if T.isLeaf:
         return 0
@@ -224,7 +225,7 @@ def keyAtDepth(T, key,h):
     if len(T.item) <= 0:
         return None
     for i in range(len(T.item)):
-        # Jey Found
+        # Key Found
         if T.item[i] == key:
             return 0
         if T.item[i] > key:
@@ -235,6 +236,7 @@ def keyAtDepth(T, key,h):
     return 1 + keyAtDepth(T.child[len(T.item)],key,h)
 
 L = [30, 50, 10, 20, 60, 70, 100, 40, 90, 80, 110, 120, 1, 11 , 3, 4, 5,105, 115, 200, 2, 45, 6]
+#L = []
 T = BTree()
 for i in L:
     print('Inserting',i)
@@ -243,15 +245,73 @@ for i in L:
     #Print(T)
     print('\n####################################')
 
-#print(height(T))
+TotalTimeStart = time.time()
+print('B-Tree Information:')
+#--------------------------------------------------------------
+print('--------------------------------------------------------')
+startTime = time.time()
+print('Height of Tree: ',height(T))
+endTime = time.time()
+print('Height Time:', endTime - startTime, 'seconds')
+print('--------------------------------------------------------')
+#--------------------------------------------------------------
 h = height(T)
 a = extract(T,[])
-#print(minAtDepth(T,2))
-#print(maxAtDepth(T,5))
-#print(totalAtDepth(T,10))
-#itemsAtDepth(T,5)
-#print(fullNodes(T))
-#print(fullLeafNodes(T))
-for i in range(len(a)):
-    print('Lookking for ', a[i], end=' ')
-    print('Depth: ',keyAtDepth(T,a[i],h))
+#-------------------------------------------------------------
+startTime = time.time()
+print('Extracted elements from list:', a)
+endTime = time.time()
+print('Extraction Time:', endTime - startTime, 'seconds')
+print('--------------------------------------------------------')
+#-------------------------------------------------------------
+startTime = time.time()
+print('Min at depth: ',minAtDepth(T,2))
+endTime = time.time()
+print('Min Element Time:', endTime - startTime, 'seconds')
+print('--------------------------------------------------------')
+#-------------------------------------------------------------
+startTime = time.time()
+print('Max at depth:', maxAtDepth(T,2))
+endTime = time.time()
+print('Max Element Time:', endTime - startTime, 'seconds')
+print('--------------------------------------------------------')
+#-------------------------------------------------------------
+startTime = time.time()
+print('Number of nodes at depth:', totalAtDepth(T,2))
+endTime = time.time()
+print('Number of Nodes Time:', endTime - startTime, 'seconds')
+print('--------------------------------------------------------')
+#-------------------------------------------------------------
+startTime = time.time()
+print('Items at depth: ')
+itemsAtDepth(T,2)
+endTime = time.time()
+print('Elements at Depth Time:', endTime - startTime, 'seconds')
+print()
+print('--------------------------------------------------------')
+#-------------------------------------------------------------
+startTime = time.time()
+print('Nodes that are full:', fullNodes(T))
+endTime = time.time()
+print('Full Nodes Time:', endTime - startTime, 'seconds')
+print('--------------------------------------------------------')
+#-------------------------------------------------------------
+startTime = time.time()
+print('Leave nodes that are full:',  fullLeafNodes(T))
+endTime = time.time()
+print('Full leave Nodes Time:', endTime - startTime, 'seconds')
+print('--------------------------------------------------------')
+#-------------------------------------------------------------
+if a is None:
+    print('Tree is empty')
+else:
+    startTime = time.time()
+    for i in range(len(a)):
+        print('Looking for ', a[i], end=' ')
+        print('Depth: ',keyAtDepth(T,a[i],h))
+        endTime = time.time()
+    print('Search Key Time:', endTime - startTime, 'seconds')
+    print('--------------------------------------------------------')
+#-------------------------------------------------------------
+TotalTimeEnd = time.time()
+print('Total Program Time:', TotalTimeEnd - TotalTimeStart, 'seconds')
