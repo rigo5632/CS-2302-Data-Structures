@@ -115,7 +115,7 @@ def FindC(H,k):
 def h(s,n):
     r = 0
     for c in s:
-        r = (r*n + ord(c))% n
+        r = (r*27 + ord(c))%n
     return r
 
 def loadFactor(H):
@@ -144,14 +144,11 @@ def emptyPercentage(H):
 def average(H):
     if H is None:
         return None
-    totalList = 0
     lengths = 0
     # computes the average of the length of list in our hashTable
     for i in range(len(H.item)):
         lengths += len(H.item[i])
-        if len(H.item[i]) >= 1:
-            totalList += 1
-    return lengths / totalList
+    return lengths / len(H.item)
 
 def standardDeviation(H):
     if H is None:
@@ -169,7 +166,7 @@ def standardDeviation(H):
     count = 0;
     for j in range(len(a)):
         count += a[j]
-    value2 = count*(1/len(a))
+    value2 = count*(1/len(H.item))
     final = math.sqrt(value2)
     return final
 
