@@ -12,6 +12,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import random
 import time
+import graphs
+import dsf
 
 # Creates Disjoint Set according to the rows and columns of our maze
 def DisjointSetForest(size):
@@ -119,7 +121,7 @@ def adjList(V, cells):
     adjL = [[] for i in range(cells)]
     for k in V:
         adjL[k[0]].append(k[1])
-    print(adjL)
+    #print(adjL)
     return adjL
 
 def path(prev, origin):
@@ -129,37 +131,57 @@ def path(prev, origin):
 
 def breadth_First_search(G, origin):
     visited = [False for i in range(len(G))]
-    print(G)
     prev = [-1 for i in range(len(G))]
     queue = []
     queue.append(origin)
     visited[origin] = True
 
     while len(queue) is not 0:
-        u = queue.pop()
+        u = queue.pop(0)
         for t in G[u]:
             if visited[t] is False:
                 visited[t] = True
                 prev[t] = u
                 queue.append(t)
-    print(prev)
     return prev
 
-'''
-def depthFirstSearchS:
-def depthFirstSearchR:
-'''
 
+
+
+def depthFirstSearchS(G, origin):
+    visited = [False for i in range(len(G))]
+    prev = [-1 for i in range(len(G))]
+    stack = []
+    stack.append(origin)
+    visited[origin] = True
+
+    while len(stack) is not 0:
+        u = stack.pop()
+        for t in G[u]:
+            if visited[t] is False:
+                visited[t] = True
+                prev[t] = u
+                stack.append(t)
+    return prev
+
+
+def depthFirstSearchR(G, origin):
+    visited[origin] = True
+    for t in G[origin]:
+        if not visited[t]:
+            prev[t] = origin
+            depthFirstSearchR(G, t)
+    return prev
 
 plt.close("all")
 # Creates Maze specs, x and y
-maze_rows = 3
-maze_cols = 3
+maze_rows = 4
+maze_cols = 4
 
 walls = wall_list(maze_rows,maze_cols)
 S = DisjointSetForest(maze_rows*maze_cols)
 
-draw_maze(walls,maze_rows,maze_cols,cell_nums=True)
+#draw_maze(walls,maze_rows,maze_cols,cell_nums=True)
 
 # User can choose which type of union to do, Standard, or compression
 print('Which Disjoint set union do you want to apply:')
@@ -169,17 +191,61 @@ choice = int(input('Choice: '))
 
 # Standard Union
 if choice == 1:
+    # Number of cells we have in our maze
     cells = maze_rows * maze_cols
-    print('Our maze currently contains', cells, 'cells')
-    print('How many walls should be removed?')
+    print('\nOur maze currently contains', cells, 'cells')
+    print('\nHow many walls should be removed?')
     remWalls = int(input('Choice: '))
 
+    # number of remove walls in less than 0
     if remWalls < 0:
         print('you cannot remove negative walls')
         exit(0)
 
+    # number of removed walls is less than cells -1
     if remWalls <  cells-1:
-        print('A path from source to destination is not guaranteed to exit')
+        print('\nA path from source to destination is not guaranteed to exit\n')
+        vertices = []
+        # while we still have number of walls to be removed
+        while remWalls != 0:
+            # Select a random list and unionize them
+            d = random.randint(0,len(walls)-1)
+            if union(S,walls[d][0],walls[d][1]) != False:
+                print('removing wall ',walls[d])
+                # remove them from lists
+                # add it to a vertices list
+                vertices.append(walls[d])
+                walls.pop(d)
+                # decrease amount of remove walls
+                remWalls -= 1
+        # Final Disjoint Set, and maze drawing
+        print('\nDisjoint Set: ',S)
+        # Adjacent List
+        adL = adjList(vertices, cells)
+        print('\nAdjacent List: ',adL)
+        # Searching path using Breadth_First_search
+        print('Breadth_First_search: Staring Point: 0 | End Point:', cells-1)
+        path(breadth_First_search(adL,0),cells-1)
+        print()
+        print('----------------------------------------------------------------')
+        # Searching path using Depth First Search Recursive
+        print('Depth First Search(Recursion): Starting Point: 0 | End Point:', cells-1)
+        visited = [False for i in range(cells)]
+        prev = [-1 for i in range(cells)]
+        path(depthFirstSearchR(adL,0),cells-1)
+        print()
+        print('----------------------------------------------------------------')
+        # Searching path using Depth First Search (Stacks)
+        print('Depth First Search(Stack): Starting Point: 0 | End Point:', cells-1)
+        path(depthFirstSearchS(adL,0),cells-1)
+        print()
+        # Draws maze
+        draw_maze(walls,maze_rows,maze_cols,cell_nums=True)
+        plt.show()
+
+    # When the number of remove walls is equal to number of cells -1
+    if remWalls == cells-1:
+        print('\nThere is a unique path from source to destination\n')
         vertices = []
         # While we have more than 1 set
         while remWalls != 0:
@@ -188,78 +254,207 @@ if choice == 1:
             if union(S,walls[d][0],walls[d][1]) != False:
                 print('removing wall ',walls[d])
                 # remove them from lists
+                # add to lisd
                 vertices.append(walls[d])
                 walls.pop(d)
                 remWalls -= 1
         # Final Disjoint Set, and maze drawing
-        print(S)
-        #print(vertices)
-        G1 = adjList(vertices, cells)
-        path(breadth_First_search(G1,0), 5)
+        print('\nDisjoint Set: ',S)
+        # Adjacent List
+        adL = adjList(vertices, cells)
+        print('\nAdjacent List: ',adL)
+        #Breadth_First_search
+        print('Breadth_First_search: Staring Point: 0 | End Point:', cells-1)
+        path(breadth_First_search(adL,0),cells-1)
+        print()
+        print('----------------------------------------------------------------')
+        # Depth First Search (Recursive)
+        print('Depth First Search(Recursion): Starting Point: 0 | End Point:', cells-1)
+        visited = [False for i in range(cells)]
+        prev = [-1 for i in range(cells)]
+        path(depthFirstSearchR(adL,0),cells-1)
+        print()
+        print('----------------------------------------------------------------')
+        # Depth First Search (Stacks)
+        print('Depth First Search(Stack): Starting Point: 0 | End Point:', cells-1)
+        path(depthFirstSearchS(adL,0),cells-1)
+        print()
+        draw_maze(walls,maze_rows,maze_cols,cell_nums=True)
+        plt.show()
 
-    if remWalls == cells-1:
-        print('There is a unique path from source to destination')
-        # While we have more than 1 set
+    # Number of remove walls is greater than cells-1
+    if remWalls > cells-1:
+        print('There is at least one path from source to destination')
+        # if we have more walls to remove than the number of cells, set it to
+        # the max amount of cells
+        if remWalls > (maze_rows*(maze_rows-1))+(maze_cols*(maze_cols-1)):
+            remWalls = (maze_rows*(maze_rows-1))+(maze_cols*(maze_cols-1))
+        vertices = []
+        # Keeps track of items we have removed
+        count = 0
         while remWalls != 0:
             # Select a random list and unionize them
             d = random.randint(0,len(walls)-1)
             if union(S,walls[d][0],walls[d][1]) != False:
                 print('removing wall ',walls[d])
-                # remove them from lists
+                vertices.append(walls[d])
                 walls.pop(d)
                 remWalls -= 1
+            if count == cells -1:
+                break
+            count += 1
+        while remWalls != 0:
+            d = random.randint(0,len(walls)-1)
+            print('removing wall ',walls[d])
+            union(S,walls[d][0],walls[d][1])
+            vertices.append(walls[d])
+            walls.pop(d)
+            remWalls -= 1
+
         # Final Disjoint Set, and maze drawing
-        print(S)
+        print('\nDisjoint Set: ',S)
+        adL = adjList(vertices, cells)
+        print('\nAdjacent List: ',adL)
+        print('Breadth_First_search: Staring Point: 0 | End Point:', cells-1)
+        path(breadth_First_search(adL,0),cells-1)
+        print()
+        print('----------------------------------------------------------------')
+        print('Depth First Search(Recursion): Starting Point: 0 | End Point:', cells-1)
+        visited = [False for i in range(cells)]
+        prev = [-1 for i in range(cells)]
+        path(depthFirstSearchR(adL,0),cells-1)
+        print()
+        print('----------------------------------------------------------------')
+        print('Depth First Search(Stack): Starting Point: 0 | End Point:', cells-1)
+        path(depthFirstSearchS(adL,0),cells-1)
+        print()
+        draw_maze(walls,maze_rows,maze_cols,cell_nums=True)
+        plt.show()
+
+# union by size and compression
+if choice == 2:
+    cells = maze_rows * maze_cols
+    print('\nOur maze currently contains', cells, 'cells')
+    print('\nHow many walls should be removed?')
+    remWalls = int(input('Choice: '))
+
+    if remWalls < 0:
+        print('you cannot remove negative walls')
+        exit(0)
+
+    if remWalls <  cells-1:
+        print('\nA path from source to destination is not guaranteed to exists\n')
+        vertices = []
+
+        while remWalls != 0:
+            d = random.randint(0,len(walls)-1)
+            # unionize items from random list
+            if unionBySize(S,walls[d][0],walls[d][1]) != False:
+                # remove from list
+                print('removing wall ',walls[d])
+                vertices.append(walls[d])
+                walls.pop(d)
+                remWalls -= 1
+        print('\nDisjoint Set: ',S)
+        adL = adjList(vertices, cells)
+        print('\nAdjacent List: ',adL)
+        #graphs.draw_graph(adL)
+        print('Breadth_First_search: Staring Point: 0 | End Point:', cells-1)
+        path(breadth_First_search(adL,0),cells-1)
+        print()
+        print('----------------------------------------------------------------')
+        print('Depth First Search(Recursion): Starting Point: 0 | End Point:', cells-1)
+        visited = [False for i in range(cells)]
+        prev = [-1 for i in range(cells)]
+        path(depthFirstSearchR(adL,0),cells-1)
+        print()
+        print('----------------------------------------------------------------')
+        print('Depth First Search(Stack): Starting Point: 0 | End Point:', cells-1)
+        path(depthFirstSearchS(adL,0),cells-1)
+        print()
+        draw_maze(walls,maze_rows,maze_cols,cell_nums=True)
+        plt.show()
+
+    if remWalls == cells-1:
+        print('\nThere is a unique path from source to destination\n')
+        vertices = []
+
+        while remWalls != 0:
+            d = random.randint(0,len(walls)-1)
+            # unionize items from random list
+            if unionBySize(S,walls[d][0],walls[d][1]) != False:
+                # remove from list
+                print('removing wall ',walls[d])
+                vertices.append(walls[d])
+                walls.pop(d)
+                remWalls -= 1
+        print('\nDisjoint Set: ',S)
+        adL = adjList(vertices, cells)
+        print('\nAdjacent List: ',adL)
+        #graphs.draw_graph(adL)
+        print('Breadth_First_search: Staring Point: 0 | End Point:', cells-1)
+        path(breadth_First_search(adL,0),cells-1)
+        print()
+        print('----------------------------------------------------------------')
+        print('Depth First Search(Recursion): Starting Point: 0 | End Point:', cells-1)
+        visited = [False for i in range(cells)]
+        prev = [-1 for i in range(cells)]
+        path(depthFirstSearchR(adL,0),cells-1)
+        print()
+        print('----------------------------------------------------------------')
+        print('Depth First Search(Stack): Starting Point: 0 | End Point:', cells-1)
+        path(depthFirstSearchS(adL,0),cells-1)
+        print()
+        draw_maze(walls,maze_rows,maze_cols,cell_nums=True)
+        plt.show()
 
     if remWalls > cells-1:
         print('There is at least one path from source to destination')
         # While we have more than 1 set
         if remWalls > (maze_rows*(maze_rows-1))+(maze_cols*(maze_cols-1)):
             remWalls = (maze_rows*(maze_rows-1))+(maze_cols*(maze_cols-1))
-
+        vertices = []
+        print(walls)
+        count = 0
         while remWalls != 0:
             # Select a random list and unionize them
             d = random.randint(0,len(walls)-1)
-            union(S,walls[d][0],walls[d][1])
-            #if union(S,walls[d][0],walls[d][1]) != False:
+            if unionBySize(S,walls[d][0],walls[d][1]) != False:
+                print('removing wall ',walls[d])
+                vertices.append(walls[d])
+                walls.pop(d)
+                remWalls -= 1
+            if count == cells -1:
+                break
+            count += 1
+        while remWalls != 0:
+            d = random.randint(0,len(walls)-1)
             print('removing wall ',walls[d])
-                # remove them from lists
+            unionBySize(S,walls[d][0],walls[d][1])
+            vertices.append(walls[d])
             walls.pop(d)
             remWalls -= 1
+
         # Final Disjoint Set, and maze drawing
-        print(S)
+        print('\nDisjoint Set: ',S)
+        adL = adjList(vertices, cells)
+        print('\nAdjacent List: ',adL)
+        print('Breadth_First_search: Staring Point: 0 | End Point:', cells-1)
+        path(breadth_First_search(adL,0),cells-1)
+        print()
+        print('----------------------------------------------------------------')
+        print('Depth First Search(Recursion): Starting Point: 0 | End Point:', cells-1)
+        visited = [False for i in range(cells)]
+        prev = [-1 for i in range(cells)]
+        path(depthFirstSearchR(adL,0),cells-1)
+        print()
+        print('----------------------------------------------------------------')
+        print('Depth First Search(Stack): Starting Point: 0 | End Point:', cells-1)
+        path(depthFirstSearchS(adL,0),cells-1)
+        print()
+        draw_maze(walls,maze_rows,maze_cols,cell_nums=True)
+        plt.show()
 
-    draw_maze(walls,maze_rows,maze_cols)
-
-    #standardEnd = time.time()
-
-    #print('Standard Union Time: ', standardEnd - standardStart)
-    plt.show()
-    exit(0)
-
-# union by size and compression
-if choice == 2:
-    compressionStart = time.time()
-    # While we have more than one set
-    while numOfSets(S) != 1:
-        # random list
-        d = random.randint(0,len(walls)-1)
-        # unionize items from random list
-        if unionBySize(S,walls[d][0],walls[d][1]) != False:
-            # remove from list
-            print('removing wall ',walls[d])
-            walls.pop(d)
-    #Final Disjoint Set and maze
-    print(S)
-
-    draw_maze(walls,maze_rows,maze_cols)
-
-    compressionEnd = time.time()
-
-    print('Union by Size and compression time: ', compressionEnd - compressionStart)
-    plt.show()
-    exit(0)
 else:
     # User selects something else than 1 or 2
-    print('Invalid input')
     exit(0)
