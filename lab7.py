@@ -39,7 +39,7 @@ def find(S,i):
     return find(S,S[i])
 
 # Creates the max according to our x and y values
-def draw_maze(walls,maze_rows,maze_cols,cell_nums=False):
+def draw_maze(walls,prevL,maze_rows,maze_cols,cell_nums=False):
     fig, ax = plt.subplots()
     for w in walls:
         if w[1]-w[0] ==1: #vertical wall
@@ -52,15 +52,22 @@ def draw_maze(walls,maze_rows,maze_cols,cell_nums=False):
             x1 = x0+1
             y0 = (w[1]//maze_cols)
             y1 = y0
+            #print([x0,x1],[y0,y1])
         ax.plot([x0,x1],[y0,y1],linewidth=1,color='k')
     sx = maze_cols
     sy = maze_rows
     ax.plot([0,0,sx,sx,0],[0,sy,sy,0,0],linewidth=2,color='k')
+    i = 0
     if cell_nums:
         for r in range(maze_rows):
             for c in range(maze_cols):
                 cell = c + r*maze_cols
-                ax.text((c+.5),(r+.5), str(cell), size=10,
+                #print(cell)
+                if cell in prevL:
+                    ax.text((c+.5),(r+.5), str(cell), size=10,
+                            ha="center", va="center", color='r')
+                else:
+                    ax.text((c+.5),(r+.5), str(cell), size=10,
                         ha="center", va="center")
     ax.axis('off')
     ax.set_aspect(1.0)
@@ -133,6 +140,7 @@ def path(prev, origin):
     # Prints the path from our point of origin to our destination
     if prev[origin] != -1:
         path(prev, prev[origin])
+    L.append(origin)
     print(origin, ' - ', end=' ')
 
 def breadth_First_search(G, origin):
@@ -244,7 +252,9 @@ if choice == 1:
         print('\nAdjacent List: ',adL)
         # Searching path using Breadth_First_search
         print('Breadth_First_search: Staring Point: 0 | End Point:', cells-1)
+        L = []
         path(breadth_First_search(adL,0),cells-1)
+        draw_maze(walls,L,maze_rows,maze_cols,cell_nums=True)
         print()
         print('----------------------------------------------------------------')
         # Searching path using Depth First Search Recursive
@@ -259,7 +269,6 @@ if choice == 1:
         path(depthFirstSearchS(adL,0),cells-1)
         print()
         # Draws maze
-        draw_maze(walls,maze_rows,maze_cols,cell_nums=True)
         plt.show()
 
     # When the number of remove walls is equal to number of cells -1
@@ -284,7 +293,9 @@ if choice == 1:
         print('\nAdjacent List: ',adL)
         #Breadth_First_search
         print('Breadth_First_search: Staring Point: 0 | End Point:', cells-1)
+        L = []
         path(breadth_First_search(adL,0),cells-1)
+        draw_maze(walls,L,maze_rows,maze_cols,cell_nums=True)
         print()
         print('----------------------------------------------------------------')
         # Depth First Search (Recursive)
@@ -298,7 +309,6 @@ if choice == 1:
         print('Depth First Search(Stack): Starting Point: 0 | End Point:', cells-1)
         path(depthFirstSearchS(adL,0),cells-1)
         print()
-        draw_maze(walls,maze_rows,maze_cols,cell_nums=True)
         plt.show()
 
     # Number of remove walls is greater than cells-1
@@ -340,19 +350,25 @@ if choice == 1:
         adL = adjList(vertices, cells)
         print('\nAdjacent List: ',adL)
         print('Breadth_First_search: Staring Point: 0 | End Point:', cells-1)
+        L = []
         path(breadth_First_search(adL,0),cells-1)
+        draw_maze(walls,L,maze_rows,maze_cols,cell_nums=True)
         print()
         print('----------------------------------------------------------------')
         print('Depth First Search(Recursion): Starting Point: 0 | End Point:', cells-1)
         visited = [False for i in range(cells)]
         prev = [-1 for i in range(cells)]
+        L = []
         path(depthFirstSearchR(adL,0),cells-1)
+        draw_maze(walls,L,maze_rows,maze_cols,cell_nums=True)
         print()
         print('----------------------------------------------------------------')
         print('Depth First Search(Stack): Starting Point: 0 | End Point:', cells-1)
+        L = []
         path(depthFirstSearchS(adL,0),cells-1)
+        draw_maze(walls,L,maze_rows,maze_cols,cell_nums=True)
         print()
-        draw_maze(walls,maze_rows,maze_cols,cell_nums=True)
+        #draw_maze(walls,maze_rows,maze_cols,cell_nums=True)
         plt.show()
 
 # union by size and compression
@@ -388,7 +404,9 @@ if choice == 2:
         adL = adjList(vertices, cells)
         print('\nAdjacent List: ',adL)
         print('Breadth_First_search: Staring Point: 0 | End Point:', cells-1)
+        L = []
         path(breadth_First_search(adL,0),cells-1)
+        draw_maze(walls,L,maze_rows,maze_cols,cell_nums=True)
         print()
         print('----------------------------------------------------------------')
         print('Depth First Search(Recursion): Starting Point: 0 | End Point:', cells-1)
@@ -400,7 +418,6 @@ if choice == 2:
         print('Depth First Search(Stack): Starting Point: 0 | End Point:', cells-1)
         path(depthFirstSearchS(adL,0),cells-1)
         print()
-        draw_maze(walls,maze_rows,maze_cols,cell_nums=True)
         plt.show()
 
     # exactly one path per vertices
@@ -424,7 +441,9 @@ if choice == 2:
         print('\nAdjacent List: ',adL)
         #graphs.draw_graph(adL)
         print('Breadth_First_search: Staring Point: 0 | End Point:', cells-1)
+        L = []
         path(breadth_First_search(adL,0),cells-1)
+        draw_maze(walls,L,maze_rows,maze_cols,cell_nums=True)
         print()
         print('----------------------------------------------------------------')
         print('Depth First Search(Recursion): Starting Point: 0 | End Point:', cells-1)
@@ -436,9 +455,7 @@ if choice == 2:
         print('Depth First Search(Stack): Starting Point: 0 | End Point:', cells-1)
         path(depthFirstSearchS(adL,0),cells-1)
         print()
-        draw_maze(walls,maze_rows,maze_cols,cell_nums=True)
         plt.show()
-
     if remWalls > cells-1:
         print('There is at least one path from source to destination')
         # While we have more than 1 set
@@ -478,19 +495,24 @@ if choice == 2:
         adL = adjList(vertices, cells)
         print('\nAdjacent List: ',adL)
         print('Breadth_First_search: Staring Point: 0 | End Point:', cells-1)
+        L = []
         path(breadth_First_search(adL,0),cells-1)
+        draw_maze(walls,L,maze_rows,maze_cols,cell_nums=True)
         print()
         print('----------------------------------------------------------------')
         print('Depth First Search(Recursion): Starting Point: 0 | End Point:', cells-1)
         visited = [False for i in range(cells)]
         prev = [-1 for i in range(cells)]
+        L = []
         path(depthFirstSearchR(adL,0),cells-1)
+        draw_maze(walls,L,maze_rows,maze_cols,cell_nums=True)
         print()
         print('----------------------------------------------------------------')
         print('Depth First Search(Stack): Starting Point: 0 | End Point:', cells-1)
+        L = []
         path(depthFirstSearchS(adL,0),cells-1)
+        draw_maze(walls,L,maze_rows,maze_cols,cell_nums=True)
         print()
-        draw_maze(walls,maze_rows,maze_cols,cell_nums=True)
         plt.show()
 
 else:
