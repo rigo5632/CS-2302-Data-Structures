@@ -166,9 +166,6 @@ def breadth_First_search(G, origin):
                 queue.append(t)
     return prev
 
-
-
-
 def depthFirstSearchS(G, origin):
     # visited list
     visited = [False for i in range(len(G))]
@@ -252,22 +249,31 @@ if choice == 1:
         print('\nAdjacent List: ',adL)
         # Searching path using Breadth_First_search
         print('Breadth_First_search: Staring Point: 0 | End Point:', cells-1)
+        breadthStart = time.time()
         L = []
         path(breadth_First_search(adL,0),cells-1)
         draw_maze(walls,L,maze_rows,maze_cols,cell_nums=True)
+        breadthEnd = time.time()
         print()
+        print('Breadth_First_search Running Time:', breadthEnd-breadthStart)
         print('----------------------------------------------------------------')
         # Searching path using Depth First Search Recursive
         print('Depth First Search(Recursion): Starting Point: 0 | End Point:', cells-1)
+        depthRStart = time.time()
         visited = [False for i in range(cells)]
         prev = [-1 for i in range(cells)]
         path(depthFirstSearchR(adL,0),cells-1)
+        depthREnd = time.time()
         print()
+        print('depthFirstSearchR Running Time', depthREnd-depthRStart)
         print('----------------------------------------------------------------')
         # Searching path using Depth First Search (Stacks)
         print('Depth First Search(Stack): Starting Point: 0 | End Point:', cells-1)
+        depthSStart = time.time()
         path(depthFirstSearchS(adL,0),cells-1)
+        depthSEnd = time.time()
         print()
+        print('depthFirstSearchS Running Time', depthSEnd - depthSStart)
         # Draws maze
         plt.show()
 
@@ -293,22 +299,31 @@ if choice == 1:
         print('\nAdjacent List: ',adL)
         #Breadth_First_search
         print('Breadth_First_search: Staring Point: 0 | End Point:', cells-1)
+        breadthStart = time.time()
         L = []
         path(breadth_First_search(adL,0),cells-1)
         draw_maze(walls,L,maze_rows,maze_cols,cell_nums=True)
+        breadthEnd = time.time()
         print()
+        print('Breadth_First_search Running Time:', breadthEnd-breadthStart)
         print('----------------------------------------------------------------')
         # Depth First Search (Recursive)
         print('Depth First Search(Recursion): Starting Point: 0 | End Point:', cells-1)
+        depthRStart = time.time()
         visited = [False for i in range(cells)]
         prev = [-1 for i in range(cells)]
         path(depthFirstSearchR(adL,0),cells-1)
+        depthREnd = time.time()
         print()
+        print('depthFirstSearchR Running Time', depthREnd-depthRStart)
         print('----------------------------------------------------------------')
         # Depth First Search (Stacks)
         print('Depth First Search(Stack): Starting Point: 0 | End Point:', cells-1)
+        depthSStart = time.time()
         path(depthFirstSearchS(adL,0),cells-1)
+        depthSEnd = time.time()
         print()
+        print('depthFirstSearchS Running Time', depthSEnd - depthSStart)
         plt.show()
 
     # Number of remove walls is greater than cells-1
@@ -337,7 +352,6 @@ if choice == 1:
                 break
         # finish up the remaining walls, and add them to their sets
         while remWalls > 0:
-            print('-')
             d = random.randint(0,len(walls)-1)
             print('removing wall ',walls[d])
             union(S,walls[d][0],walls[d][1])
@@ -345,29 +359,37 @@ if choice == 1:
             walls.pop(d)
             remWalls -= 1
         # Final Disjoint Set, Breadth_First_search, depthFirstSearchR, depthFirstSearchS,
-        print(vertices)
         print('\nDisjoint Set: ',S)
         adL = adjList(vertices, cells)
         print('\nAdjacent List: ',adL)
         print('Breadth_First_search: Staring Point: 0 | End Point:', cells-1)
+        breadthStart = time.time()
         L = []
         path(breadth_First_search(adL,0),cells-1)
         draw_maze(walls,L,maze_rows,maze_cols,cell_nums=True)
+        breadthEnd = time.time()
         print()
+        print('Breadth_First_search Running Time:', breadthEnd-breadthStart)
         print('----------------------------------------------------------------')
         print('Depth First Search(Recursion): Starting Point: 0 | End Point:', cells-1)
+        depthRStart = time.time()
         visited = [False for i in range(cells)]
         prev = [-1 for i in range(cells)]
         L = []
         path(depthFirstSearchR(adL,0),cells-1)
         draw_maze(walls,L,maze_rows,maze_cols,cell_nums=True)
+        depthREnd = time.time()
         print()
+        print('depthFirstSearchR Running Time', depthREnd-depthRStart)
         print('----------------------------------------------------------------')
         print('Depth First Search(Stack): Starting Point: 0 | End Point:', cells-1)
+        depthSStart = time.time()
         L = []
         path(depthFirstSearchS(adL,0),cells-1)
         draw_maze(walls,L,maze_rows,maze_cols,cell_nums=True)
         print()
+        depthSEnd = time.time()
+        print('depthFirstSearchS Running Time', depthSEnd - depthSStart)
         #draw_maze(walls,maze_rows,maze_cols,cell_nums=True)
         plt.show()
 
